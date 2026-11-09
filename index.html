@@ -1,0 +1,2989 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUZEF Vize Sınavı Hazırlık Portalı - NYP & PL/SQL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #050811;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 15px 10px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+    }
+
+    /* Course Selector Bar */
+    .course-selector {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .course-btn {
+      flex: 1;
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 2px solid #334155;
+      background: #131d31;
+      color: #94a3b8;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .course-btn:hover {
+      border-color: #64748b;
+      color: #fff;
+    }
+
+    .course-btn.active {
+      border-color: #3b82f6;
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+      color: #60a5fa;
+      box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.4);
+    }
+
+    .course-btn.plsql.active {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #064e3b 0%, #1e293b 100%);
+      color: #34d399;
+      box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.4);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      padding: 22px 20px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+    }
+
+    header h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #60a5fa;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 130px;
+      padding: 10px 14px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: center;
+    }
+
+    .stat-card .val {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .stat-card.correct .val { color: var(--accent); }
+    .stat-card.wrong .val { color: var(--danger); }
+    .stat-card.remaining .val { color: var(--warning); }
+    .stat-card.total .val { color: var(--primary); }
+
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-action {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset { background: #334155; color: #cbd5e1; }
+    .btn-reset:hover { background: #475569; color: #fff; }
+    .btn-shuffle { background: #1e3a8a; color: #93c5fd; }
+    .btn-shuffle:hover { background: #1d4ed8; color: #fff; }
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .q-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: border-color 0.2s;
+    }
+
+    .q-card:hover { border-color: #475569; }
+    .q-card.answered-correct { border-left: 5px solid var(--accent); }
+    .q-card.answered-wrong { border-left: 5px solid var(--danger); }
+
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .q-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #334155;
+      color: #93c5fd;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+
+    .q-badge.benzer {
+      background: #064e3b;
+      color: #6ee7b7;
+    }
+
+    .q-number {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .q-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .q-text pre, .q-text code {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--code-bg);
+      padding: 12px 14px;
+      border-radius: 8px;
+      display: block;
+      margin: 10px 0;
+      color: #38bdf8;
+      font-size: 0.9rem;
+      border: 1px solid #1e293b;
+      overflow-x: auto;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .opt-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      background: #1e293b;
+      border-color: var(--primary);
+    }
+
+    .opt-btn.selected-correct {
+      background: rgba(16, 185, 129, 0.15) !important;
+      border-color: var(--accent) !important;
+      color: #a7f3d0 !important;
+      font-weight: 600;
+    }
+
+    .opt-btn.selected-wrong {
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-color: var(--danger) !important;
+      color: #fecaca !important;
+    }
+
+    .opt-btn:disabled { cursor: default; }
+
+    .explanation-box {
+      margin-top: 15px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 4px solid var(--primary);
+      font-size: 0.9rem;
+      color: #bfdbfe;
+      display: none;
+    }
+
+    .explanation-box.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Ders Seçim Butonları -->
+    <div class="course-selector">
+      <button class="course-btn active" id="btnCourseNYP" onclick="switchCourse('nyp')">
+        💻 Nesneye Yönelik Programlama (C#)
+      </button>
+      <button class="course-btn plsql" id="btnCoursePLSQL" onclick="switchCourse('plsql')">
+        🗄️ PL/SQL Veritabanı Programlama
+      </button>
+    </div>
+
+    <header>
+      <h1 id="headerTitle">AUZEF Nesneye Yönelik Programlama</h1>
+      <p id="headerSubtitle">Çıkmış Vize Soruları & Yeni Birebir Benzer Soru Hazırlık Portalı</p>
+    </header>
+
+    <div class="tabs" id="tabsBar">
+      <!-- Tabs will be rendered dynamically -->
+    </div>
+
+    <!-- Sınav Taktikleri Paneli -->
+    <div id="taktikPanel" style="display: none; background: #1e293b; border: 1px solid #eab308; border-radius: 14px; padding: 22px; margin-bottom: 25px;">
+      <h2 id="taktikHeading" style="color: #facc15; margin-bottom: 14px; font-size: 1.3rem;">🎯 Sınav Taktikleri & "Bunu Görünce Bunu İşaretle" İpuçları</h2>
+      <div id="taktikList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; font-size: 0.95rem;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card total">
+        <div class="val" id="totalCount">0</div>
+        <div class="label">Toplam Soru</div>
+      </div>
+      <div class="stat-card correct">
+        <div class="val" id="correctCount">0</div>
+        <div class="label">Doğru</div>
+      </div>
+      <div class="stat-card wrong">
+        <div class="val" id="wrongCount">0</div>
+        <div class="label">Yanlış</div>
+      </div>
+      <div class="stat-card remaining">
+        <div class="val" id="remainCount">0</div>
+        <div class="label">Kalan</div>
+      </div>
+    </div>
+
+    <div class="controls-bar" id="ctrlBar">
+      <div>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Sınav Modu: <strong>Tıklayınca Anında Cevap Gösterilir</strong></span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-action btn-shuffle" onclick="shuffleCurrent()">🔀 Karıştır</button>
+        <button class="btn-action btn-reset" onclick="resetAnswers()">🔄 Sıfırla</button>
+      </div>
+    </div>
+
+    <div class="question-list" id="questionList">
+      <!-- Dynamic Questions will be inserted here -->
+    </div>
+
+    <footer>
+      AUZEF Bilgisayar Programcılığı Müfredatına Uygun Olarak Hazırlanmıştır. Başarılar dileriz!
+    </footer>
+  </div>
+
+  <script>
+    let allCourses = {};
+    let activeCourseKey = 'nyp';
+    let currentTab = 'all';
+    let currentQuestions = [];
+    let userAnswers = {}; // { 'course_qId': optIdx }
+
+    const embeddedCourses = {
+  "nyp": {
+    "title": "Nesneye Yönelik Programlama (C#)",
+    "code": "NYP",
+    "lolonolo": [
+      {
+        "question": ".NET Framework’ün amacı aşağıdakilerden hangisidir?",
+        "options": [
+          "A) Yalnızca C# projelerinde kullanılan bir derleyicidir.",
+          "B) Birden fazla programlama dilini destekleyen ve uygulama geliştirmeyi kolaylaştıran bir platformdur.",
+          "C) C++ programlarını derlemek için kullanılan bir IDE'dir.",
+          "D) Yalnızca masaüstü uygulamaları geliştirmek için kullanılan bir yapıdır.",
+          "E) Yalnızca mobil uygulama geliştirmek için kullanılan bir kütüphanedir."
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıdakilerden hangisi Nesneye Yönelik Programlama yaklaşımına dayanan bir dilin sahip olması gereken temel özelliklerden biri değildir?",
+        "options": [
+          "A) Çok biçimlilik (Polymorphism)",
+          "B) Soyutlama (Abstraction)",
+          "C) Modelleme (Modelling)",
+          "D) Kapsülleme (Encapsulation)",
+          "E) Kalıtım (Inheritance)"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Sistemdeki kullanıcıların nasıl etkileşimde bulunacağını ve sistemle ilgili işlevleri nasıl gerçekleştireceklerini tanımlayan 4+1 Görünüm Modeli aşağıdakilerden hangisidir?",
+        "options": [
+          "A) Fiziksel Görünüm (Physical View)",
+          "B) Süreç Görünümü (Process View)",
+          "C) Mantıksal Görünüm (Logical View)",
+          "D) Geliştirme Görünümü (Development View)",
+          "E) Kullanım Senaryoları Görünümü (Use Cases View)"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "UML’de, sınıflar arasındaki “is-a” ilişkisini aşağıdaki hangi kavram temsil eder?",
+        "options": [
+          "A) Birleşim (Aggregation)",
+          "B) Bütünleme (Composition)",
+          "C) Birliktelik (Association)",
+          "D) Kalıtım (Inheritance)",
+          "E) Bağımlılık (Dependency)"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": "Kalıtım (Inheritance) nesneler ve sınıflar arasında 'is-a' (bir türüdür) ilişkisini kurar."
+      },
+      {
+        "question": "Aşağıdakilerden hangisi bir işlemin nasıl (how) gerçekleştirileceği ile ilgilenen yaklaşıma sahip bir programlama dilidir?",
+        "options": [
+          "A) Regular Expression",
+          "B) Java",
+          "C) HTML",
+          "D) Prolog",
+          "E) SQL"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Nesneye Yönelik Programlamada “Farklı nesnelerin aynı arayüzü kullanarak farklı işlevler gerçekleştirmesi” durumu hangi terim ile ifade edilir?",
+        "options": [
+          "A) Kalıtım (Inheritance)",
+          "B) Methods (Metotlar)",
+          "C) Çokbiçimlilik (Polymorphism)",
+          "D) Kapsülleme (Encapsulation)",
+          "E) Soyutlama (Abstraction)"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıdakilerden hangisi bir yazılımın kullanıcı gözüyle kaliteli olduğunu gösteren kriterlerden biri değildir?",
+        "options": [
+          "A) Yazılım hem stabil çalışmalı hem de içerisindeki verilerin güvenliğini sağlayabilmelidir.",
+          "B) Yazılım mümkün olduğunca az hata ile istenen sonucu gerektiği hızda sunabilmelidir.",
+          "C) Yazılımın modülleri yeni projelerde tekrar kullanılabilmelidir.",
+          "D) Yazılım kullanılabilir olmalıdır.",
+          "E) Yazılım, sistem kaynaklarını gerektiği ölçüde kullanmalıdır."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıdakilerden hangisi Ortak Dil Tanımlamaları (Common Language Specifications – CLS) tarafından desteklenen programlama dillerinden biri değildir?",
+        "options": [
+          "A) Fortran",
+          "B) Python",
+          "C) Perl",
+          "D) C++",
+          "E) XML"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Yazılım geliştirirken nesneye yönelik düşünme yaklaşımı ilk olarak aşağıdaki hangi aşamada devreye girer?",
+        "options": [
+          "A) Kodlama",
+          "B) Tasarım",
+          "C) Çözümleme",
+          "D) Planlama",
+          "E) Analiz"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Doğrulama (verification) işlemi aşağıdaki yazılım geliştirme aşamalarından hangisinde yapılmalıdır?",
+        "options": [
+          "A) Tasarım",
+          "B) Kodlama",
+          "C) Dokümantasyon",
+          "D) Çözümleme",
+          "E) Test"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": ".NET platformlarında kullanılan, tekrar kullanılabilir bileşenlerin ve hizmetlerin bir koleksiyonu olan temel bileşen aşağıdakilerden hangisidir?",
+        "options": [
+          "A) Common Intermediate Language (CIL)",
+          "B) Common Language Specifications (CLS)",
+          "C) Common Language Runtime (CLR)",
+          "D) Framework Class Library (FCL)",
+          "E) Common Type System (CTS)"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# programlama dilinde hangi anahtar kelime ile bir değişkenin sabit (değiştirilemez) olacağı belirtilir?",
+        "options": [
+          "A) const",
+          "B) readonly",
+          "C) static",
+          "D) var",
+          "E) sealed"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Yorumlayıcı mantığına benzer şekilde kodun belli bir bölümünü makine koduna çevirip çalıştıran, diğer satırları ise daha sonra makine koduna dönüştüren JIT yapısı aşağıdakilerden hangisidir?",
+        "options": [
+          "A) Eco-JIT",
+          "B) General JIT",
+          "C) Normal JIT",
+          "D) Pro-JIT",
+          "E) Pre-JIT"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Nesneye yönelik programlamada, karmaşıklığı gizleyerek programlama sürecini daha anlaşılır ve yönetilebilir hale getiren kavram aşağıdakilerden hangisidir?",
+        "options": [
+          "A) Çok Biçimlilik (Polymorphism)",
+          "B) Soyutlama (Abstraction)",
+          "C) Kapsülleme (Encapsulation)",
+          "D) Sınıflandırma (Classification)",
+          "E) Kalıtım (Inheritance)"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "int x = 42;\nobject y = x;\nYukarıdaki C# kod satırları aşağıdaki hangi işleme bir örnektir?",
+        "options": [
+          "A) Convert Sınıfı ile dönüşüm",
+          "B) Type Casting (Cast İşlemi)",
+          "C) Büyük türden küçük türe dönüşüm",
+          "D) Boxing (Kutulama)",
+          "E) Unboxing (Kutudan Çıkarma)"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Nesneye yönelik programlamada veri ve işlevlerin bir arada bulunduğu yapıyı ifade eden kavram hangisidir?",
+        "options": [
+          "A) Kalıtım (Inheritance)",
+          "B) Çokbiçimlilik (Polymorphism)",
+          "C) Sınıf (Class)",
+          "D) Nesne (Object)",
+          "E) Soyutlama (Abstraction)"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "double a = 14;\nobject b = a;\nYukarıdaki C# kod satırlarında tanımlanan a ve b değişkenleri hangi bellek bölgesinde saklanırlar?",
+        "options": [
+          "A) a - Stack Bellek Bölgesi, b - Register Bölgesi",
+          "B) Her ikisi de Stack Bellek Bölgesi",
+          "C) a - Heap Bellek Bölgesi, b - Stack Bellek Bölgesi",
+          "D) Her ikisi de Heap Bellek Bölgesinde",
+          "E) a - Stack Bellek Bölgesi, b - Heap Bellek Bölgesi"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Sınıf diyagramında (Class Diagram) bir sınıfın içindeki aşağıdaki hangi bileşen, sınıfın fonksiyonlarını gösterir?",
+        "options": [
+          "A) Erişim Niteleyicisi (Access Modifier)",
+          "B) İlişkiler (Relations)",
+          "C) Nitelikler (Attributes)",
+          "D) Metotlar (Methods)",
+          "E) Sınıf Adı (Class Name)"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıdaki diyagram türlerinden hangisi UML içinde yer almaz?",
+        "options": [
+          "A) Sınıf Diyagramı (Class Diagram)",
+          "B) Durum Makinesi Diyagramı (State Machine Diagram)",
+          "C) Sıra Diyagramı (Sequence Diagram)",
+          "D) Kullanım Durumu Diyagramı (Use Case Diagram)",
+          "E) Donanım Diyagramı (Hardware Diagram)"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# programlama dilinde bool veri türünün tanımı aşağıdakilerden hangisidir?",
+        "options": [
+          "A) Mantıksal değerleri (true/false) saklar.",
+          "B) Karakter dizilerini saklar.",
+          "C) Kayan noktalı sayıları saklar.",
+          "D) Yalnızca tam sayıları saklar.",
+          "E) Tarih ve saat bilgilerini saklar."
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2025-2026 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "int x = 42;\nobject y = x;\nYukarıdaki C# kod satırları aşağıdaki hangi işleme bir örnektir?",
+        "options": [
+          "A) Unboxing (Kutudan Çıkarma)",
+          "B) Type Casting (Cast İşlemi)",
+          "C) Boxing (Kutulama)",
+          "D) Convert Sınıfı ile dönüşüm",
+          "E) Büyük türden küçük türe dönüşüm"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2024-2025 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "static int degerArtir(int a)\n{\na += 1;\nreturn a;\n}\nint a = 11;\nint b = degerArtir(a);\nConsole.Write(a);\nConsole.Write(“,”);\nConsole.Write(b);\nYukarıda bir fonksiyon ve bu fonksiyon çağrısını çalıştıran ifadeler verilmiştir. Kod bloğunun tamamı çalıştırıldığında üretilen çıktı aşağıdakilerden hangisidir?",
+        "options": [
+          "A) 13",
+          "B) 11",
+          "C) 10",
+          "D) 12",
+          "E) 14"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": "AUZEF sistem anahtarında 13 işaretlidir. Standart C# çıktısı '11,12'dir."
+      },
+      {
+        "question": "C# Programlama Dilinde double türündeki bir değişkenin boyutu kaç byte’tır?",
+        "options": [
+          "A) 1",
+          "B) 8",
+          "C) 16",
+          "D) 4",
+          "E) 2"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": "C# dilinde double türü 64 bit yani 8 byte yer kaplar."
+      },
+      {
+        "question": "C# programlama dilinde yer alan “Yapı (Struct) Kavramı” için aşağıda verilen ifadelerden hangisi yanlıştır?",
+        "options": [
+          "A) Nesne türetilebilir.",
+          "B) Yapıcı (constructor) tanımlanabilir.",
+          "C) Yıkıcı (destructor) tanımlanabilir.",
+          "D) Metot tanımlanabilir.",
+          "E) Değer türündedirler."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# programlama dilinde sadece bir satır yorum satırına alınmak istenirse aşağıdakilerden hangisini kullanılır?",
+        "options": [
+          "A) */",
+          "B) \"",
+          "C) /*",
+          "D) #",
+          "E) //"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "int kontrol = 13;\nint sonuc = kontrol > 18 & kontrol <= 13 ? kontrol << 2 :0 ;\nYukarda verilen işlemler uygulandığında son değeri kaç olur?",
+        "options": [
+          "A) 52",
+          "B) 0",
+          "C) 26",
+          "D) 2",
+          "E) 13"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": "AUZEF sisteminde doğru cevap olarak A (52) girilmiştir. Ancak standart C# mantığında (13 > 18) false olduğu için sonuç 0 olur. Sınavda çıkarsa AUZEF anahtarına (52) dikkat ediniz."
+      },
+      {
+        "question": "int[,] degisken = new int[3, 2];\nYukarda verilen değişken için aşağıdaki ifadelerden hangisi doğrudur?",
+        "options": [
+          "A) Tek boyutlu bir dizidir.",
+          "B) Çift boyutlu bir dizidir.",
+          "C) Boyutu dinamik olarak değişebilir.",
+          "D) Koleksiyon türünde bir değişkendir.",
+          "E) Ondaklı değerler tutmaktadır."
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıdaki verilenlerden hangisi nesneye yönelik programlamanın sağladığı faydalardan biri değildir?",
+        "options": [
+          "A) Kendini tekrar etme",
+          "B) Bilgi saklama",
+          "C) Kolay hata ayıklama",
+          "D) Tekrar kullanılabilirlik",
+          "E) Modülerlik"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "int a = 17;\nConsole.Write(a);\nConsole.Write(“,”);\nConsole.Write(a++);\nConsole.Write(“,”);\nConsole.Write(–a);\nConsole.Write(“,”);\nConsole.Write(a);\nYukarda verilen kod bloğu çalıştırıldığında üretilen çıktı aşağıdakilerden hangisidir?",
+        "options": [
+          "A) 17, 17, 16, 17",
+          "B) 17, 18, 17, 17",
+          "C) 17, 17, 17, 17",
+          "D) 17, 18, 19, 18",
+          "E) 17,18,16,17"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# programlama dilinde aşağıdaki verilen değişken tanımlarından hangisi yanlıştır?",
+        "options": [
+          "A) uint yas;",
+          "B) bool isaret;",
+          "C) string soyad;",
+          "D) long 0boyut;",
+          "E) int ad;"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıda verilen metot tanımlarından hangisi yanlıştır?",
+        "options": [
+          "A) int topla(double a, double b)",
+          "B) void topla(int a, int b)",
+          "C) int topla (float a, float b)",
+          "D) int+topla(int a, int b)",
+          "E) int topla(int a, int b)"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# programlama dilinde verilen bir dizi hazır kütüphane kullanarak dizinin sırası tersine çevirmek istenirse Array sınıfı içerisindeki hangi metot kullanılır?",
+        "options": [
+          "A) Sort",
+          "B) Reverse",
+          "C) IndexOf",
+          "D) FindAll",
+          "E) Find"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": ".Net Core platformu için kullanılan çapraz platform (cross platform) ifadesi hangi anlama gelmektedir?",
+        "options": [
+          "A) Kodlar kendi içinde çaprazlanır.",
+          "B) Sadece Windows işletim sisteminde çalışır.",
+          "C) Sadece macOS işletim sisteminde çalışır.",
+          "D) Linux işletim sistemini desteklemez.",
+          "E) Birden fazla platformu destekler."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# Programlama Dilinde bir sınıftan yeni bir nesne türetmek isteniyorsa hangi anahtar kelime kullanılır?",
+        "options": [
+          "A) class",
+          "B) struct",
+          "C) start",
+          "D) new",
+          "E) static"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıda verilenlerden hangisi koleksiyon türlerine örnektir?",
+        "options": [
+          "A) Int",
+          "B) String",
+          "C) HashSet",
+          "D) Array",
+          "E) Class"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Console.Write(13+3); Console.Write(“,”);\nConsole.Write(13-2); Console.Write(“,”);\nConsole.Write(13*3); Console.Write(“,”);\nConsole.Write(13/2); Console.Write(“,”);\nConsole.Write(13.0/2.0); Console.Write(“,”);\nYukarda verilen kod bloğu çalıştırıldığında üretilen çıktı aşağıdakilerden hangisinde verilmiştir?",
+        "options": [
+          "A) 16, 11, 39, 6.5, 6.5",
+          "B) 16, 11, 133, 6.5, 6.5",
+          "C) 16, 11, 39, 6, 6",
+          "D) 16, 11, 39, 6, 6.5",
+          "E) 16, 15, 39, 6.5, 6.5"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": ".Net Core geliştirme ortamında “dotnet build” komutu ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+        "options": [
+          "A) .Net Core'da yardım parametrelerini listeler.",
+          "B) .Net Core platformu hakkında bilgi verir.",
+          "C) Yeni bir proje oluştur.",
+          "D) Mevcut projeyi temizler.",
+          "E) Mevcut projeyi derler."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Aşağıdakilerden hangisi nesneye yönelik bir programlama dili değildir?",
+        "options": [
+          "A) Objective-C",
+          "B) C++",
+          "C) C",
+          "D) Java",
+          "E) C#"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "C# programlama dilinde bir sınıf tanımlamak için aşağıdaki anahtar kelimelerden hangisi kullanılır?",
+        "options": [
+          "A) object",
+          "B) class",
+          "C) using",
+          "D) interface",
+          "E) namespace"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "static int f(int n)\n{\nif (n<=1)\nreturn n;\nreturn f(n-1)+f(n-2);\n}\nint n=9;\nYukarda verilen metot, f(9) değeri için çağrıldığında nihai sonuç değeri kaç olur?",
+        "options": [
+          "A) 43",
+          "B) 54",
+          "C) 13",
+          "D) 24",
+          "E) 34"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": "Fibonacci fonksiyonudur: f(0)=0, f(1)=1, f(2)=1, f(3)=2, f(4)=3, f(5)=5, f(6)=8, f(7)=13, f(8)=21, f(9)=34."
+      },
+      {
+        "question": "I – Sınıflar (class) referans türündedirler\nII – Yapılar (struct) değer türündedirler.\nIII – Sınıf (class) ve yapı (struct) arasında bir fark yoktur.\nC# programlama dilinde sınıf (class) ve yapı (struct) ile ilgili yukarıda verilen ifadelerden hangisi ya da hangileri doğrudur?",
+        "options": [
+          "A) I ve II",
+          "B) Yalnız II",
+          "C) I ve III",
+          "D) Yalnız I",
+          "E) I, II, III"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF 2023-2024 Vize",
+        "explanation": ""
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -1 \n C# Ve .net Core Teknolojilerine Giriş \n \n \n \n \n Aşağıdakilerden hangisi neneye yönelik bir programlama dilidir?",
+        "options": [
+          "a) C",
+          "b) Haskell",
+          "c) Lisp",
+          "d) C#",
+          "e) Bash"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) C#"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi fonksiyonel bir programlama dilidir?",
+        "options": [
+          "a) Java",
+          "b) C#",
+          "c) Smalltalk",
+          "d) Simula",
+          "e) Haskell"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) Haskell"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama için aşağıdaki verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) A- Nesneye Yönelik geliştirilen ilk progrmalama dili Java’dır.",
+          "b) B- C# Nesneye Yönelik bir dil değildir.",
+          "c) C- Smalltalk birçok Nesneye Yönelik Programlama diline ilham olmuştur.",
+          "d) D- C Nesneye Yönelik bir programlama dilidir.",
+          "e) Haskell Nesneye Yönelik bir programlama dilidir."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) C- Smalltalk birçok Nesneye Yönelik Programlama diline ilham olmuştur."
+      },
+      {
+        "question": "I – Çapraz Platformdur. \nII – Birden fazla dili deskteler. \nIII – Standard kütüphaneler barındırır. \n.Net Core platformu ile ilgili yukarda verilen ifadelerden hangileri doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) I,II,III"
+      },
+      {
+        "question": "I – System bir alan adıdır. \nII – Console.WriteLine fonskyionu ekrana çıktı üretir. \nIII – import ifadesi alan adlarını kullanabiliriz. \nC# ile verilen yukardaki ifadelerden hangileri doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) I ve II"
+      },
+      {
+        "question": ".Net Core ile ilgili verilen dotnet new console komutu ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Yeni bir proje oluştur.",
+          "b) Mevcut projeyi derler.",
+          "c) Projeyi çalışrır.",
+          "d) Net Core’da yardım parametrelerini listeler.",
+          "e) Hiçbiri"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Yeni bir proje oluştur."
+      },
+      {
+        "question": ".Net Core ile ilgili verilen komut satırı ile dotnet – -info komutu ile ilgili aşağıdaki ifadelerden hangisi doğrudur.",
+        "options": [
+          "a) Yeni bir proje oluştur.",
+          "b) Mevcut projeyi derler.",
+          "c) Net Core platformu hakkında bilgi verilir.",
+          "d) Net Core’da yardım parametrelerini listeler.",
+          "e) Hiçbiri"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) Net Core platformu hakkında bilgi verilir."
+      },
+      {
+        "question": "I – Microsoft tarafından geliştirilmektedir. \nII – Nesneye Yöneliktir. \nIII – İlk versiyonu 2002 yılında yayınlanmıştır. \nYukarda özellikleri verilen programalam dili hangisidir?",
+        "options": [
+          "a) C",
+          "b) Fortran",
+          "c) Java",
+          "d) C#",
+          "e) Python"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 1",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) C#"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -2 \nC# Programlama Dilinin Temel Yapıları \n \n \n \n \n I – var sehir; \nII – var sehir = “İstanbul”; \nIII – int 3yas; \nYukarda verilen değişken tanımları ile ilgili hangi ifade veya ifadeler doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) Yalnız II"
+      },
+      {
+        "question": "int türündeki bir değişkenin boyutu kaç byte’tır?",
+        "options": [
+          "a) 1 byte",
+          "b) 2 byte",
+          "c) 3 byte",
+          "d) 4 byte",
+          "e) 5 byte"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) 4 byte"
+      },
+      {
+        "question": "I – double tutar; \nII – string ad; \nIII – int boyut; \nYukarda verilen değişken tanımları ile ilgili hangi ifade veya ifadeler doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) I,II,III"
+      },
+      {
+        "question": "C# dilinde sizeof işleci ile ilgili aşağıdakilerden hangisi doğrudur?",
+        "options": [
+          "a) Verilen değişkenin boyutunu byte cinsinde döndürür.",
+          "b) Verilen değişkenin boyutunu bit cinsinde döndürür.",
+          "c) Verilen bir değişkenin türünü değiştirir.",
+          "d) Verilen bir değişkenin türünü dönderir.",
+          "e) Verilen bir referans türünün kopyasını çıkartır."
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Verilen değişkenin boyutunu byte cinsinde döndürür."
+      },
+      {
+        "question": "C# dilinde Kutulama (Boxing) işleminin amacı nedir?",
+        "options": [
+          "a) Verilen değişkeni kopyalar.",
+          "b) Verilen nesneyi kopyalar.",
+          "c) Verilen değişkenin türünü dönderir.",
+          "d) Verilen değişkenin ismini değiştirir.",
+          "e) Değer türündeki bir değişkeni referans türüne dönüştürür."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) Değer türündeki bir değişkeni referans türüne dönüştürür."
+      },
+      {
+        "question": "C# dilinde Kutudan Çıkartma (Unboxing) işleminin amacı nedir?",
+        "options": [
+          "a) Verilen değişkeni kopyalar.",
+          "b) Verilen nesneyi kopyalar.",
+          "c) Verilen değişkenin türünü dönderir.",
+          "d) Verilen değişkenin ismini değiştirir.",
+          "e) Referans türündeki bir değişkeni değer türüne dönüştürür."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) Referans türündeki bir değişkeni değer türüne dönüştürür."
+      },
+      {
+        "question": "I – Örtülü Dönüşüm (Implicit Cast) işlemini destekler \nII – Açık Dönüşüm (Explicit Cast) işlemini destekler \nIII – Tür dönüşümünde her zaman veri kaybı yaşanır. \nC# dili için yukarda verilen tür dönüşüm işlemleri ile ilgili hangi ifade veya ifadeler doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) I ve II"
+      },
+      {
+        "question": "I – int a = (int) 3.4; \nII – long b = (long) 2.4; \nIII – int c = (int) 4.0; \nC# dili için yukarda verilen tür dönüşüm işlemleri ile ilgili hangi madde yada maddelerde veri kaybı yaşanır?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) I ve II"
+      },
+      {
+        "question": "I – ushort \nII – long \nIII – int \nC# dili için yukarda verilenden maddelerden hangisi veya hangileri değer türündeir (value type) ?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) I,II,III"
+      },
+      {
+        "question": "I – string \nII – double \nIII – uint \nC# dili için yukarda verilenden maddelerden hangisi veya hangileri referans türündeir (reference type) ?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 2",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Yalnız I"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -3 \nAritmetik İşlemler, Program Akış Ve Kontrol Yapıları \n \n \n \n \n int a = 7; \na++; \nConsole.WriteLine(a) ; \nYukarda verilen kod bloğu çalıştırıldığında aşağıdaki çıktılardan hangisini üretir?",
+        "options": [
+          "a) 5",
+          "b) 6",
+          "c) 7",
+          "d) 8",
+          "e) 9"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) 8"
+      },
+      {
+        "question": "int a = 10; \n++a; \nConsole.WriteLine(a++) ; \nYukarda verilen kod bloğu çalıştırıldığında aşağıdaki çıktılardan hangisini üretir?",
+        "options": [
+          "a) 9",
+          "b) 10",
+          "c) 11",
+          "d) 12",
+          "e) 13"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) 11"
+      },
+      {
+        "question": "int a = 7; \n++a; \nConsole.WriteLine(++a) ; \nYukarda verilen kod bloğu çalıştırıldığında aşağıdaki çıktılardan hangisini üretir?",
+        "options": [
+          "a) 5",
+          "b) 6",
+          "c) 7",
+          "d) 8",
+          "e) 9"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) 9"
+      },
+      {
+        "question": "int a = 7; \nConsole.WriteLine(++a + a++) ; \nYukarda verilen kod bloğu çalıştırıldığında aşağıdaki çıktılardan hangisini üretir?",
+        "options": [
+          "a) 12",
+          "b) 13",
+          "c) 14",
+          "d) 15",
+          "e) 16"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) 16"
+      },
+      {
+        "question": "I – Indeks tabanlı erişim sağlar. \nII – for döngüsüne göre daha yavaştır. \nIII – for döngüsüne göre daha hızlıdır. \nC# dilinde foreach in yapısı yukarda verilenden maddelerden hangisi veya hangileri doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) Yalnız II"
+      },
+      {
+        "question": "I – for \nII – if – else \nIII – switch \nC# dilinde yukarda verilen anahtar kelimelerden hangisi döngüler için kullanılır?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Yalnız I"
+      },
+      {
+        "question": "C# dili için aşağıdaki verilen ifadelerden hangisi yanlıştır?",
+        "options": [
+          "a) for bir döngü ifadesidir",
+          "b) while bir döngü ifadesidir",
+          "c) ++ artırma operatörüdür.",
+          "d) break ifadesi döngüler içinde kullanılmaz.",
+          "e) = = ifadesi eşitlik kontrolü için kullanılmaktadır."
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) break ifadesi döngüler içinde kullanılmaz."
+      },
+      {
+        "question": "I – ! = \nII – => \nIII – =< \nC# dilinde yukarda verilen kullanımlardan hangisi veya hangileri doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 3",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Yalnız I"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -4 \nMetotlar \n \n \n \n \n Aşağıda verilen metot tanımlarından hangisi yanlıştır?",
+        "options": [
+          "a) int topla(int a, int b)",
+          "b) void topla(int a, int b)",
+          "c) int 3topla(int a, int b)",
+          "d) int topla(double a, double b)",
+          "e) int topla(float a, floatb)"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) int 3topla(int a, int b)"
+      },
+      {
+        "question": "I – Sınıf (class) içinde tanımlanırlar. \nII – Yapı (struct) içinde tanımlanırlar. \nIII – Herhangi bir yerde tanımlanabilirler. \nC# programalama dili için metot tanımları ile ilgili yukarda verilenlerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) I ve II"
+      },
+      {
+        "question": "I – Metotlar parametre almazlar. \nII – Metotların dönüş türü void olabilir. \nIII – Metotların parametreleri mutlaka zorunlu olmalıdır. \nC# programlama dilinde metot imzası ile ile ilgili yukarda verilenlerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) Yalnız II"
+      },
+      {
+        "question": "I – Metotlar sadece bir kez kullanılabilirler. \nII – Metotlar zorunlu parametreler içerebilir. \nIII – Metotlar varsayılan parametreler içerebilir. \nC# programlama dilinde metotlar ile ilgili verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) II ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) II ve III"
+      },
+      {
+        "question": "I – Opsiyonel parametreler için varsayılan bir değer olmalıdır. \nII – Opsiyonel parametreler için varsayılan değere ihtiyaç yoktur. \nIII – Opsiyonel parametreler, zorunlu parametrelerle birlikte kullanılamazlar. \nC# programlama dilinde opsionel metot parametreleri ile ilgili verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Yalnız I"
+      },
+      {
+        "question": "int islemYap(int a) \n{ \na+= 1 \nreturn a; \n} \n…. \nint b = 10; \nislemYap(b); \n Yukardaki verilen fonksiyon çalıştırıldığında b değeri kaç olur?",
+        "options": [
+          "a) 9",
+          "b) 10",
+          "c) 11",
+          "d) 12",
+          "e) 13"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) 10"
+      },
+      {
+        "question": "int islemYap(ref int a) \n{ \na+= 1; \nreturn a; \n} \n…. \nint b = 10; \nislemYap(ref b); \nYukardaki verilen fonksiyon çalıştırıldığında b değeri kaç olur?",
+        "options": [
+          "a) 9",
+          "b) 10",
+          "c) 11",
+          "d) 12",
+          "e) 13"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) 11"
+      },
+      {
+        "question": "int f(int n) \n{ \nif (n <= 1) \nreturn n; \nreturn f(n-1) + f(n-2); \n} \nYukardaki verilen fonksiyon çalıştırıldığında f(7) için çağrıldığında dönderdiği nihai değer kaç olur?",
+        "options": [
+          "a) 9",
+          "b) 10",
+          "c) 11",
+          "d) 12",
+          "e) 13"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) 13"
+      },
+      {
+        "question": "int f(int n) \n{ \nif(n ==0 || n == 1) \nreturn 1; \nreturn n * f(n-1); \n} \nYukardaki verilen fonksiyon çalıştırıldığında f(4) için çağrıldığında dönderdiği nihai değer kaç olur?",
+        "options": [
+          "a) 1",
+          "b) 2",
+          "c) 6",
+          "d) 24",
+          "e) 120"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 4",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) 24"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -5 \nDizi Ve Koleksiyon Yapıları \n \n \n \n \n Verilen bir dizinin her bir elemanı üzerinde tek tek işlem yapmak istersek aşağıdaki verilen ifadelerden hangisini kullanırız?",
+        "options": [
+          "a) switch",
+          "b) foreach",
+          "c) struct",
+          "d) main",
+          "e) else"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) foreach"
+      },
+      {
+        "question": "Verilen bir dizi hazır kütüphaneler kullanarak sıralamak istersek Array sınıfı içerisindeki hangi metodu kullanırız?",
+        "options": [
+          "a) Reverse",
+          "b) Find",
+          "c) FindAll",
+          "d) Sort",
+          "e) IndexOf"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) Sort"
+      },
+      {
+        "question": "Array.Reverse metodu hangi işlemi icar eder?",
+        "options": [
+          "a) Verilen bir diziyi artan sırada sıralar.",
+          "b) Verilen bir dizi içinde arama gerçekleştirir.",
+          "c) Verilen bir dizinin elemanlarının dizilimini tersine çevirir.",
+          "d) Verilen bir diziye ekleme yapar.",
+          "e) Verilen bir diziyi temizler."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) Verilen bir dizinin elemanlarının dizilimini tersine çevirir."
+      },
+      {
+        "question": "Dizi ve Koleksiyonlar ile verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Dizilerin boyutu sabittir, Koleksiyonların boyutu dinamik değişir.",
+          "b) Diziler sadece string türünde veri tutarlar.",
+          "c) Koleksiyonlar ile Diziler arasında hiç bir fark yoktur.",
+          "d) Diziler anahtar/değer çifti ile veri tutar.",
+          "e) Koleksiyonların boutları sabittir, değiştirilemez."
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Dizilerin boyutu sabittir, Koleksiyonların boyutu dinamik değişir."
+      },
+      {
+        "question": "int[,] Deneme = new int[2, 2]; \nYukarda verilen Deneme değişkeni için aşağıdaki ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Deneme değişkeni Koleksiyon türünde bir değişkendir.",
+          "b) Deneme değişkeni ondalık değerler tutmaktadır.",
+          "c) Deneme değişkeni tek boyutlu bir dizidir.",
+          "d) Deneme değişkeni çift boyutlu bir dizidir.",
+          "e) Deneme değişkeninin boyutu dinamik olarak değişebilir."
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) Deneme değişkeni çift boyutlu bir dizidir."
+      },
+      {
+        "question": "Console.WriteLine(Deneme[“34”]); \nYukardaki verilen Örnekte komut satırına Deneme değişkeninin değeri yazdırılmaktadır. Deneme değişkenin türü aşağıdakilerden hangisidir?",
+        "options": [
+          "a) Int32 türündedir",
+          "b) String değer barındıran bir dizidir.",
+          "c) İki boyutlu bir dizidir.",
+          "d) Int32 türünde anahtarı olan bir Dictionary türüdür.",
+          "e) String türünde anahtarı olan bir Dictionary türüdür."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) String türünde anahtarı olan bir Dictionary türüdür."
+      },
+      {
+        "question": "Aşağıda verilenlerden hangisi Koleksiyon türlerine Denemetir?",
+        "options": [
+          "a) Int",
+          "b) String",
+          "c) Array",
+          "d) Stack",
+          "e) Double"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) Stack"
+      },
+      {
+        "question": "Verilen bir List değişkenin her bir elemanı üzerinde tek tek işlem yapmak istersek aşağıdaki verilen ifadelerden hangisini kullanırız?",
+        "options": [
+          "a) switch",
+          "b) if",
+          "c) class",
+          "d) main",
+          "e) for"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) for"
+      },
+      {
+        "question": "List ornekListe = new List(); \nornekListe ile verilen Koleksiyona tek seferde birden fazla değer eklemek istersek aşağıdaki metotlardan hangisinin kullanırız?",
+        "options": [
+          "a) Add",
+          "b) AddAll",
+          "c) AddRange",
+          "d) Remove",
+          "e) RemoveAll"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 5",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) AddRange"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -6 \nNesneye Yönelik Programlamanın Temelleri \n \n \n \n \n Nesneye Yönelik Programlama ile Fonksiyonel Programlama arasındaki fark aşağıdakilerden hangisinde verilmiştir?",
+        "options": [
+          "a) Nesneye Yönelik Programlamada fonksiyon tanımlanamaz.",
+          "b) Fonksiyonel Programlamada verilerle işlem yapılamaz.",
+          "c) Nesneye Yönelik Programlamada nesler kendilerini ilgilendiren verileri barındırırlar.",
+          "d) Fonksiyonel Programlamada nesne tanımlanabilir.",
+          "e) Nesneye Yönelik Programlama ile Fonksiyonel Programlama arasında bir fark yoktur."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) Nesneye Yönelik Programlamada nesler kendilerini ilgilendiren verileri barındırırlar."
+      },
+      {
+        "question": "C# Programalama Dilinde bir sınıf tanımlamak için aşağıdaki anahtar kelimelerden hangisi kullanılır?",
+        "options": [
+          "a) function",
+          "b) class",
+          "c) namespace",
+          "d) Main",
+          "e) interface"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) class"
+      },
+      {
+        "question": "Aşağıda verilenden hangisi Nesneye Yönelik Programlamanın sağladığı faydalardan birisi değildir?",
+        "options": [
+          "a) Modülerlik",
+          "b) Tekrar Kullanılabilirlik",
+          "c) Bilgi Saklama",
+          "d) Kolay Hata Ayıklama",
+          "e) Zor Kod Geliştirme"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) Zor Kod Geliştirme"
+      },
+      {
+        "question": "C# programalma dili için verilen erişim denetleyicilerden hangisi yanlıştır?",
+        "options": [
+          "a) private",
+          "b) protected",
+          "c) public",
+          "d) protected global",
+          "e) private protected"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: d) protected global"
+      },
+      {
+        "question": "private erişim denetleyicisi için aşağıdaki ifadelerde hangisi doğrudur?",
+        "options": [
+          "a) Bu erişim denetleyicisine sahip tür ve üyeler diğer sınıflar içerisinde erişilebilirler.",
+          "b) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya yapı içerisinde erişilebilirler.",
+          "c) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya türetilmiş sınıf içerisinden erişilebilirler.",
+          "d) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) erişilebilir.",
+          "e) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) veya türetilmiş diğer derlemede (assembly) erişilebilir"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya yapı içerisinde erişilebilirler."
+      },
+      {
+        "question": "public erişim denetleyicisi için aşağıdaki ifadelerde hangisi doğrudur?",
+        "options": [
+          "a) Bu erişim denetleyicisine sahip tür ve üyeler diğer sınıflar içerisinde erişilebilirler.",
+          "b) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya yapı içerisinde erişilebilirler.",
+          "c) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya türetilmiş sınıf içerisinden erişilebilirler.",
+          "d) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) erişilebilir.",
+          "e) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) veya türetilmiş diğer derlemede (assembly) erişilebilir"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Bu erişim denetleyicisine sahip tür ve üyeler diğer sınıflar içerisinde erişilebilirler."
+      },
+      {
+        "question": "protected erişim denetleyicisi için aşağıdaki ifadelerde hangisi doğrudur?",
+        "options": [
+          "a) Bu erişim denetleyicisine sahip tür ve üyeler diğer sınıflar içerisinde erişilebilirler.",
+          "b) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya yapı içerisinde erişilebilirler.",
+          "c) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya türetilmiş sınıf içerisinden erişilebilirler.",
+          "d) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) erişilebilir.",
+          "e) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) veya türetilmiş diğer derlemede (assembly) erişilebilir"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya türetilmiş sınıf içerisinden erişilebilirler."
+      },
+      {
+        "question": "I – Bir sınıf içinde birden fazla tanımlanabilir. \nII – Yapıcılar (constructor) parametre alabilirler. \nIII – Yapıcılar (constructor) bir sonuç dönderirler. \nC# programlama dilinde yapıcılar (constructor) ile ilgili verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) I ve II"
+      },
+      {
+        "question": "I – Bir sınıf içinde sadece bir kez tanımlanabilir. \nII – Yıkıcılar (destructor) parametre alabilirler. \nIII – Yıkıcılar (destructor) bir sonuç dönderirler. \nC# programlama dilinde yıkıcılar (destructor) ile ilgili verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 6",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) Yalnız I"
+      },
+      {
+        "question": "Nesneye Yönelik Programlama \nÜnite -7 \nKalıtım ( Inheritance ) \n \n \n \n \n Nesneye Yönelik Programlama ile Fonksiyonel Programlama arasındaki fark aşağıdakilerden hangisinde verilmiştir?",
+        "options": [
+          "a) Nesneye Yönelik Programlamada fonksiyon tanımlanamaz.",
+          "b) Fonksiyonel Programlamada Kalıtım yapıları vardır.",
+          "c) Fonksiyonel Programlamada abstract sınıfları tanımlanabilir.",
+          "d) Fonksiyonel Programlamada nesne tanımlanabilir.",
+          "e) Nesneye Yönelik Programlamada nesler kendilerini ilgilendiren verileri barındırırlar."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) Nesneye Yönelik Programlamada nesler kendilerini ilgilendiren verileri barındırırlar."
+      },
+      {
+        "question": "C# Programalama Dilinde türetilmiş bir sınıft tanımlamak için aşağıdaki anahtar kelimelerden hangisi kullanılır?",
+        "options": [
+          "a) function",
+          "b) class",
+          "c) namespace",
+          "d) Main",
+          "e) interface"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: b) class"
+      },
+      {
+        "question": "C# programlama dili için aşağıdaki verilenlerden hangisi doğrudur?",
+        "options": [
+          "a) Bir sınıf aynı anda birden fazla sınıfı Kalıtım yoluyla miras alabilir.",
+          "b) private erişim denetleyicisine sahip üyeler her yerden erişeime sahiptir.",
+          "c) Abstract olarak tanımlanan sınıflardan nesne üretilemez.",
+          "d) Abstract olarak tanımlanan sınıflardan Kalıtım yoluyla miras alınamaz.",
+          "e) Abstract olarak tanımlanan sınıflarda yapıcı (constructor) tanımlanamaz."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) Abstract olarak tanımlanan sınıflardan nesne üretilemez."
+      },
+      {
+        "question": "Kalıtım yoluyla türetilmiş bir sınıf, temel sınıfta var olan bir metotu yeniden tanımlamak istersen aşağıdaki anahtar kelimelerde hangisi kullanır?",
+        "options": [
+          "a) new",
+          "b) abstract",
+          "c) void",
+          "d) internal",
+          "e) public"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: a) new"
+      },
+      {
+        "question": "protected erişim denetleyicisine sahip bir üye için aşağıdaki ifadelerde hangisi doğrudur?",
+        "options": [
+          "a) Bu erişim denetleyicisine sahip tür ve üyeler diğer sınıflar içerisinde erişilebilirler.",
+          "b) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya yapı içerisinde erişilebilirler.",
+          "c) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya türetilmiş sınıf içerisinden erişilebilirler.",
+          "d) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) erişilebilir.",
+          "e) Bu erişim denetleyicisine sahip tür ve üyeler aynı derlemede (assembly) veya türetilmiş diğer derlemede (assembly) erişilebilir"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) Bu erişim denetleyicisine sahip tür ve üyeler aynı sınıf veya türetilmiş sınıf içerisinden erişilebilirler."
+      },
+      {
+        "question": "I – Kalıtım yolu ile sadece bir sınıf türetilebilir. \nII – Kalıtım yolu ile türetilen sınıf temel sınıfın yapıcısnı çağırabilir. \nIII – Yapıcılar (constructor) bir sonuç dönderirler. \nC# programlama dilinde sınıflar (class) ile ilgili verilen ifadelerden hangisi doğrudur?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: c) I ve II"
+      },
+      {
+        "question": "I – Kalıtım yolu ile türetilen sınıflarda yapıcı tanımlanamaz. \nII – Yıkıcılar (destructor) parametre alabilirler. \nIII – Yıkıcılar (destructor) bir sonuç dönderirler. \nC# programlama dilinde yıkıcılar (destructor) ile ilgili verilen ifadelerden hangisi veya hangileri yanlıştır?",
+        "options": [
+          "a) Yalnız I",
+          "b) Yalnız II",
+          "c) I ve II",
+          "d) I ve III",
+          "e) I,II,III"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF Deneme 7",
+        "type": "lolonolo",
+        "explanation": "Doğru Cevap: e) I,II,III"
+      }
+    ],
+    "benzer": [
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdakilerden hangisi bir yazılımın geliştirici (yazılımcı) açısından kaliteli kabul edilmesini sağlayan kriterlerden biridir?",
+        "options": [
+          "A) Yazılımın kullanıcı dostu arayüze ve kolay öğrenilebilirliğe sahip olması",
+          "B) Yazılımın mümkün olduğunca az hata ile istenen sonucu yüksek hızda üretmesi",
+          "C) Yazılımın bağımsız modüllerden oluşması ve modüller arası etkileşimin en az olması",
+          "D) Yazılımın sistem kaynaklarını (RAM, CPU) aşırı tüketmemesi",
+          "E) Yazılımın son kullanıcıya yönelik yeterli bir kullanım kılavuzuna sahip olması"
+        ],
+        "answerIndex": 2,
+        "explanation": "AUZEF Kitap Bölüm 1: Modülerlik, kodun okunabilirliği ve bakım kolaylığı geliştirici kriteridir; diğerleri kullanıcı gözüyle kalite kriterleridir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki programlama yaklaşımlarından hangisi Bildirimli (Declarative) programlama dillerine örnek gösterilebilir?",
+        "options": [
+          "A) C",
+          "B) Pascal",
+          "C) SQL",
+          "D) Java",
+          "E) C++"
+        ],
+        "answerIndex": 2,
+        "explanation": "SQL, HTML ve Düzenli İfadeler (Regex) bildirimli (ne yapılacağını belirten) dillerdir. C, Pascal, Java, C++ emirli (imperative) dillerdir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "UML sınıf diyagramlarında `protected` erişim belirteci hangi karakter ile temsil edilir?",
+        "options": [
+          "A) +",
+          "B) -",
+          "C) #",
+          "D) ~",
+          "E) &"
+        ],
+        "answerIndex": 2,
+        "explanation": "UML'de public: +, private: -, protected: #, package/default: ~ karakterleriyle gösterilir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Bir 'Üniversite' sınıfı ile 'Fakülte' sınıfları arasındaki ilişkide, fakülteler üniversitenin birer parçasıdır ancak üniversite kapansa dahi fakülteler bağımsız varlıklar olarak düşünülebilir (zayıf sahiplik). Bu ilişki UML'de nasıl adlandırılır?",
+        "options": [
+          "A) Bileşim (Composition)",
+          "B) Birleşme (Aggregation)",
+          "C) Kalıtım (Inheritance)",
+          "D) Gerçekleştirme (Realization)",
+          "E) Genelleştirme (Generalization)"
+        ],
+        "answerIndex": 1,
+        "explanation": "Parçanın bütünden bağımsız var olabildiği ilişki Aggregation (Birleşme)'dir. Bağımsız var olamadığı sıkı ilişki ise Composition'dır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Philippe Kruchten tarafından geliştirilen 4+1 Görünüm Modeli'nde, yazılımın donanım üzerine nasıl dağıtıldığını, sunucu ve ağ bağlantılarını betimleyen görünüm hangisidir?",
+        "options": [
+          "A) Mantıksal Görünüm (Logical View)",
+          "B) Süreç Görünümü (Process View)",
+          "C) Geliştirme Görünümü (Development View)",
+          "D) Fiziksel Görünüm (Physical / Deployment View)",
+          "E) Kullanım Senaryoları Görünümü (Use Cases View)"
+        ],
+        "answerIndex": 3,
+        "explanation": "Fiziksel / Dağıtım (Deployment) görünümü donanım topolojisini ve fiziksel bağlantıları modeller."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": ".NET Framework'te birden fazla programlama dilinin (C#, VB.NET, F# vb.) aynı veri türü sistemini paylaşarak birbiriyle uyumlu çalışmasını sağlayan bileşen hangisidir?",
+        "options": [
+          "A) CLR (Common Language Runtime)",
+          "B) CTS (Common Type System)",
+          "C) CIL (Common Intermediate Language)",
+          "D) JIT (Just-In-Time)",
+          "E) FCL (Framework Class Library)"
+        ],
+        "answerIndex": 1,
+        "explanation": "CTS (Common Type System - Ortak Tip Sistemi), tüm .NET dilleri arasında tür uyumluluğunu sağlayan ortak tip sistemidir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": ".NET Framework mimarisinde çalışan uygulamaların birbirinden tamamen izole edilmiş, kendi bellek ve güvenlik sınırlarına sahip bağımsız çalışma ortamına ne ad verilir?",
+        "options": [
+          "A) Namespace (İsim Alanı)",
+          "B) Assembly",
+          "C) Application Domain (Uygulama Alanı)",
+          "D) Class Library",
+          "E) Virtual Machine"
+        ],
+        "answerIndex": 2,
+        "explanation": "Uygulama Alanı (Application Domain), uygulamaların işlem (process) içinde izole çalışmasını sağlayan güvenlik ve yürütme ortamıdır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki C# değişken türlerinden hangisi referans (reference type) türünde bir değişkendir?",
+        "options": [
+          "A) int",
+          "B) bool",
+          "C) double",
+          "D) string",
+          "E) char"
+        ],
+        "answerIndex": 3,
+        "explanation": "string, class, object, array ve interface referans türleridir ve verileri Heap bölgesinde saklanır. int, bool, double, char değer tipleridir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki kod satırlarının hangisinde unboxing (kutudan çıkarma) işlemi yapılmıştır?\n1: int sayi = 25;\n2: object kutu = sayi;\n3: int yeniSayi = (int)kutu;\n4: string yazi = yeniSayi.ToString();",
+        "options": [
+          "A) 1. satır",
+          "B) 2. satır",
+          "C) 3. satır",
+          "D) 4. satır",
+          "E) Hiçbiri"
+        ],
+        "answerIndex": 2,
+        "explanation": "3. satırda `(int)kutu` ifadesiyle heap'teki object kutusu içinden int değer türü çıkarılmış (unboxing) ve stack'e yazılmıştır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde değişken isimlendirme kuralları ile ilgili aşağıdakilerden hangisi yanlıştır?",
+        "options": [
+          "A) Değişken isimleri harf veya alt çizgi (_) ile başlayabilir.",
+          "B) Değişken isimleri bir rakam ile başlayabilir.",
+          "C) C# büyük/küçük harf duyarlı (case-sensitive) bir dildir.",
+          "D) Değişken adlarında boşluk veya '@' gibi özel simgeler normal koşulda kullanılamaz.",
+          "E) 'int', 'class', 'while' gibi anahtar kelimeler doğrudan değişken adı olarak seçilemez."
+        ],
+        "answerIndex": 1,
+        "explanation": "Değişken isimleri kesinlikle rakamla başlayamaz (Örn: 0boyut, 1sayi geçersizdir)."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde bir sınıftan nesne üretildiğinde otomatik olarak çalışan ve nesnenin başlangıç durumunu ayarlayan, geri dönüş tipi olmayan özel metoda ne ad verilir?",
+        "options": [
+          "A) Yıkıcı Metot (Destructor)",
+          "B) Sanal Metot (Virtual Method)",
+          "C) Yapıcı Metot (Constructor)",
+          "D) Aşırı Yüklenmiş Metot (Overloaded Method)",
+          "E) Statik Metot (Static Method)"
+        ],
+        "answerIndex": 2,
+        "explanation": "Nesne oluşturulurken bellekte ilk değerleri ayarlamak üzere otomatik çalışan metoda Yapıcı Metot (Constructor) denir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde sınıfın kendisine ve o sınıfın çalışma anındaki geçerli örneğine referans vermek için kullanılan anahtar kelime hangisidir?",
+        "options": [
+          "A) base",
+          "B) this",
+          "C) super",
+          "D) self",
+          "E) current"
+        ],
+        "answerIndex": 1,
+        "explanation": "C#'ta sınıfın kendi alanlarına ve metotlarına referans vermek için 'this' anahtar kelimesi kullanılır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C#'ta bir özelliğin (property) sadece 'get' bloğunun tanımlanıp 'set' bloğunun yazılmaması bu özelliğe nasıl bir nitelik kazandırır?",
+        "options": [
+          "A) Write-only (Sadece yazılabilir)",
+          "B) Readonly (Sadece okunabilir)",
+          "C) Static (Statik)",
+          "D) Sealed (Mühürlü)",
+          "E) Abstract (Soyut)"
+        ],
+        "answerIndex": 1,
+        "explanation": "Yalnızca get bloğu olan özellikler 'readonly' (yalnızca okunabilir) olur, dışarıdan yeni değer atanamaz."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde doğrudan çoklu kalıtım (multiple inheritance) desteklenmez. Ancak birden fazla kaynaktan davranış miras almayı sağlamak için hangi yapı kullanılır?",
+        "options": [
+          "A) Abstract Class (Soyut Sınıf)",
+          "B) Interface (Arayüz)",
+          "C) Struct (Yapı)",
+          "D) Sealed Class (Mühürlü Sınıf)",
+          "E) Enum"
+        ],
+        "answerIndex": 1,
+        "explanation": "C#'ta bir sınıf sadece tek bir sınıftan türer ama birden çok Interface (Arayüz) uygulayarak çoklu kalıtım ihtiyacını karşılar."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki kod parçasının ekran çıktısı nedir?\n\nint x = 20;\nint y = 6;\nConsole.WriteLine(x / y + \",\" + (double)x / y);",
+        "options": [
+          "A) 3,3",
+          "B) 3.33,3.33",
+          "C) 3,3.3333333333333335",
+          "D) 3.33,3",
+          "E) 0,3.33"
+        ],
+        "answerIndex": 2,
+        "explanation": "x / y tamsayı bölmesidir (20 / 6 = 3). (double)x / y ise ondalıklı bölmedir (3.3333...)."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C#'ta bir metoda geçirilen değer türü değişkenin kopyasının değil, bizzat adresinin aktarılmasını sağlayan ve metot içinde mutlaka bir başlangıç değeri atanması zorunluluğu getiren anahtar kelime hangisidir?",
+        "options": [
+          "A) ref",
+          "B) out",
+          "C) in",
+          "D) params",
+          "E) pointer"
+        ],
+        "answerIndex": 1,
+        "explanation": "'out' anahtar kelimesi ile gönderilen değişkenlere metot gövdesinde mutlaka bir değer atanmak (initialize edilmek) zorundadır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Bir metodun değişken sayıda ve istenen miktarda parametre alabilmesini sağlayan anahtar kelime hangisidir?",
+        "options": [
+          "A) params",
+          "B) args",
+          "C) varargs",
+          "D) dynamic",
+          "E) array"
+        ],
+        "answerIndex": 0,
+        "explanation": "C#'ta değişken sayıda argüman almak için metodun son parametresinde 'params' anahtar sözcüğü kullanılır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Tam sayı aritmetiği yapılırken olası bir sayı taşması (overflow) durumunda hata (OverflowException) fırlatılmasını zorunlu kılan blok veya operatör hangisidir?",
+        "options": [
+          "A) unchecked",
+          "B) checked",
+          "C) try-catch",
+          "D) sizeof",
+          "E) typeof"
+        ],
+        "answerIndex": 1,
+        "explanation": "'checked' bloğu taşma kontrollerini aktif eder ve taşma durumunda OverflowException istisnası fırlatır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki operatörlerden hangisi C# dilinde operatör aşırı yükleme (operator overloading) işlemine tabi TUTULAMAZ?",
+        "options": [
+          "A) +",
+          "B) -",
+          "C) ==",
+          "D) &&",
+          "E) *"
+        ],
+        "answerIndex": 3,
+        "explanation": "C#'ta && ve || operatörleri doğrudan aşırı yüklenemez; bunun yerine & ve | operatörleri ile true/false operatörleri aşırı yüklenerek dolaylı olarak kullanılır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Bir nesnenin çalışma zamanında belirli bir türe ait olup olmadığını test eden ve geriye 'true' ya da 'false' mantıksal değeri döndüren operatör hangisidir?",
+        "options": [
+          "A) as",
+          "B) is",
+          "C) typeof",
+          "D) sizeof",
+          "E) in"
+        ],
+        "answerIndex": 1,
+        "explanation": "'is' operatörü tip denetimi (type checking) yapar ve boolean (true/false) döndürür. 'as' operatörü ise dönüştüremezse null döndürür."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdakilerden hangisi bir nesnenin farklı durumlarını ve bu durumlar arasındaki geçişleri gösteren UML diyagram türüdür?",
+        "options": [
+          "A) Aktivite Diyagramı (Activity Diagram)",
+          "B) Durum Makinesi Diyagramı (State Machine Diagram)",
+          "C) Sıra Diyagramı (Sequence Diagram)",
+          "D) Kullanım Durumu Diyagramı (Use Case Diagram)",
+          "E) Bileşen Diyagramı (Component Diagram)"
+        ],
+        "answerIndex": 1,
+        "explanation": "Durum Makinesi Diyagramları (State Machine Diagrams), nesnenin yaşam döngüsü boyunca içinde bulunduğu durumları (States) ve olaylarla tetiklenen geçişleri (Transitions) modeller."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde değişkenlerin faaliyet alanı (Scope) ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+        "options": [
+          "A) Metot içinde tanımlanan yerel değişkenlere sınıfın diğer tüm metotlarından doğrudan erişilebilir.",
+          "B) Bir değişken süslü parantezlerle {} oluşturulan bloğun içinde tanımlandığında yalnızca o blok ve iç içe bloklarda geçerlidir.",
+          "C) Değişkenin tanımlandığı satırdan önceki satırlarda da değişken kullanılabilir.",
+          "D) Metot parametreleri metodun dışındaki kod bloklarından doğrudan çağrılabilir.",
+          "E) Değişkenin faaliyet alanı sonlansa dahi Stack bölgesinden asla silinmez."
+        ],
+        "answerIndex": 1,
+        "explanation": "C#'ta süslü parantezler {} kendi faaliyet alanlarını oluşturur ve değişken tanımlandığı blok ile onun altındaki iç içe bloklarda geçerlidir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki kod parçasının ekran çıktısı nedir?\n\nint sayi = 10;\nsayi += 5;\nsayi *= 2;\nConsole.WriteLine(sayi);",
+        "options": [
+          "A) 20",
+          "B) 25",
+          "C) 30",
+          "D) 35",
+          "E) 40"
+        ],
+        "answerIndex": 2,
+        "explanation": "sayi += 5 ile sayi = 15 olur. sayi *= 2 ile 15 * 2 = 30 olur."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdakilerden hangisi C# dilinde tekil (Unary) operatörlerden biri değildir?",
+        "options": [
+          "A) ++",
+          "B) --",
+          "C) !",
+          "D) ~",
+          "E) %"
+        ],
+        "answerIndex": 4,
+        "explanation": "% (mod alma) sağına ve soluna iki operand alan ikili (binary) bir operatördür. ++, --, !, ~ tek operand alan unary operatörlerdir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C#'ta mantıksal XOR (Müstakil Veya) işlemi için kullanılan sembol aşağıdakilerden hangisidir?",
+        "options": [
+          "A) &",
+          "B) |",
+          "C) ^",
+          "D) ~",
+          "E) !"
+        ],
+        "answerIndex": 2,
+        "explanation": "^ operatörü mantıksal ve bitsel XOR (özel veya) işlemcisidir. Operandlar birbirinden farklıysa true (1), aynıysa false (0) üretir."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Bir metodun geri dönüş türü (Return Type) 'void' olarak belirlenmişse, bu metot için aşağıdakilerden hangisi doğrudur?",
+        "options": [
+          "A) Metot geriye int türünde 0 değeri döndürür.",
+          "B) Metot çağrıldığında geriye hiçbir değer döndürmez.",
+          "C) Metot mutlaka parametre almak zorundadır.",
+          "D) Metot gövdesinde 'return' anahtar kelimesi hiçbir şekilde yazılamaz.",
+          "E) Metot sadece Main metodu içerisinden çağrılabilir."
+        ],
+        "answerIndex": 1,
+        "explanation": "'void' geri dönüş değeri olmayan metotlar için kullanılır. Metot bir iş yapar fakat çağrıldığı yere bir değer aktarmaz."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C#'ta bir sınıfın yıkıcı metodu (destructor) ile ilgili aşağıdakilerden hangisi YANLIŞTIR?",
+        "options": [
+          "A) Sınıf adı ile aynı ada sahiptir ve başına ~ işareti konur.",
+          "B) Asla parametre almaz.",
+          "C) Geri dönüş türü belirtilmez.",
+          "D) Bir sınıfta birden fazla yıkıcı metot tanımlanabilir.",
+          "E) Nesne bellekten atılacağı zaman Garbage Collector tarafından otomatik tetiklenir."
+        ],
+        "answerIndex": 3,
+        "explanation": "C#'ta bir sınıfta yalnızca 1 adet yıkıcı metot (destructor) tanımlanabilir, aşırı yüklenemez."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde aynı sınıf içerisinde bulunan metot veya alanların isimlerinin parametrelerle çakışmasını engellemek için kullanılan anahtar kelime hangisidir?",
+        "options": [
+          "A) this",
+          "B) base",
+          "C) self",
+          "D) root",
+          "E) new"
+        ],
+        "answerIndex": 0,
+        "explanation": "Parametre ismi ile sınıf alanı aynı olduğunda (örn: this.isim = isim) sınıfın kendi üyesine erişmek için 'this' kullanılır."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "Aşağıdaki kod parçası derlendiğinde ne sonuç verir?\n\npublic class Test {\n  public int Hesapla(int a, int b) { return a + b; }\n  public double Hesapla(int a, int b) { return a + b; }\n}",
+        "options": [
+          "A) Sorunsuz derlenir ve çalışır.",
+          "B) Derleme hatası (Compile Error) verir, çünkü sadece geri dönüş tipi farklı olan metotlar aşırı yüklenemez.",
+          "C) Çalışma zamanında FormatException hatası verir.",
+          "D) İkinci metot ilk metodu geçersiz kılar (override eder).",
+          "E) Hesapla metodu recursive çalışır."
+        ],
+        "answerIndex": 1,
+        "explanation": "C#'ta aşırı yüklemede (Overloading) metot parametre sayısı veya veri türü farklı olmak zorundadır. Sadece return tipinin farklı olması derleme hatasına yol açar."
+      },
+      {
+        "category": "Vize Benzeri Deneme (Yeni)",
+        "question": "C# dilinde 32 bitlik işaretli tam sayı türü olan 'int' türünün .NET Framework CTS karşılığı aşağıdakilerden hangisidir?",
+        "options": [
+          "A) System.Int16",
+          "B) System.Int32",
+          "C) System.Int64",
+          "D) System.UInt32",
+          "E) System.Byte"
+        ],
+        "answerIndex": 1,
+        "explanation": "C# int = System.Int32, short = System.Int16, long = System.Int64, byte = System.Byte olarak tanımlıdır."
+      }
+    ],
+    "taktikler": [
+      {
+        "title": "1. 'is-a' ilişkisi görürsen:",
+        "desc": "Cevap kesinlikle Kalıtım (Inheritance)'dır.",
+        "color": "#38bdf8"
+      },
+      {
+        "title": "2. 'Farklı nesnelerin aynı arayüzle farklı davranış sergilemesi':",
+        "desc": "Cevap kesinlikle Çokbiçimlilik (Polymorphism)'dir.",
+        "color": "#4ade80"
+      },
+      {
+        "title": "3. 'Kullanıcı gözüyle kalite kriteri DEĞİLDİR' sorusu:",
+        "desc": "Şıklarda 'Yazılımın modülleri yeni projelerde tekrar kullanılabilmelidir' (Reusability) ara ve işaretle!",
+        "color": "#f87171"
+      },
+      {
+        "title": "4. 'CLS tarafından desteklenen dillerden biri DEĞİLDİR':",
+        "desc": "Şıklarda XML veya HTML ara! XML/HTML programlama dili değildir, işaretleme dilidir.",
+        "color": "#fb923c"
+      },
+      {
+        "title": "5. 'Doğrulama (verification) hangi aşamada yapılır?':",
+        "desc": "Kodlamadan önce Tasarım aşamasında yapılır. Nesneye yönelik düşünme ilk nerede devreye girer sorusu da Tasarım'dır.",
+        "color": "#a855f7"
+      },
+      {
+        "title": "6. 'Yorumlayıcı mantığı gibi kodun belli bölümünü çeviren JIT':",
+        "desc": "Cevap: Eco-JIT. (Baştan sona çeviren: Pre-JIT, varsayılan: Normal JIT)",
+        "color": "#ec4899"
+      },
+      {
+        "title": "7. Bellek Bölgeleri (Stack vs Heap):",
+        "desc": "int, double, bool, char -> Stack. string, object, class, array -> Heap. Değer tipinin object'e atanması (object b=a) -> Boxing.",
+        "color": "#eab308"
+      },
+      {
+        "title": "8. 4+1 Görünüm Modeli:",
+        "desc": "Kullanıcı etkileşimini tanımlayan: Kullanım Senaryoları (Use Cases View). Eşzamanlılık/thread: Süreç (Process View). Donanım: Fiziksel (Physical View).",
+        "color": "#2dd4bf"
+      },
+      {
+        "title": "9. 'UML içinde YER ALMAZ':",
+        "desc": "Şıklarda 'Donanım Diyagramı' (Hardware Diagram) veya 'Veritabanı Diyagramı' ara!",
+        "color": "#818cf8"
+      },
+      {
+        "title": "10. AUZEF Sistem Hatalı Sorular (Aynen ezberle!):",
+        "desc": "degerArtir(a) sorusunun cevabı sistemde: 13. kontrol > 18 & kontrol <= 13 ? kontrol << 2 : 0 sorusunun cevabı sistemde: 52.",
+        "color": "#f43f5e"
+      }
+    ]
+  },
+  "plsql": {
+    "title": "PL/SQL Veritabanı Programlama",
+    "code": "PLSQL",
+    "lolonolo": [
+      {
+        "question": "PL/SQL’de anonim bloklarla ilgili aşağıda verilenlerden hangisi doğrudur?",
+        "options": [
+          "A) Kaynak kod her çalıştırmada derleyici tarafından tekrar kontrol edilir.",
+          "B) Kodun herhangi bir yerinden ismiyle çağrılıp çalıştırılabilirler.",
+          "C) İstisna işleme bloğunda derleme zamanı hataları işlenir.",
+          "D) Anonim blokta deklarasyon bölümünün yer alması zorunludur.",
+          "E) İsimli bloklara göre daha performanslı çalışır."
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "Anonim bloklar veritabanında saklanmaz, bu nedenle her çalıştırıldığında kaynak kod derleyici tarafından tekrar kontrol edilir.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "DECLARE\nstatus BOOLEAN := ... BETWEEN -10.5 AND -5;\n\nYukarıda bir kısmı verilen PL/SQL kodunda status değişkeninin FALSE olması için boş bırakılan yere aşağıdakilerden hangisi yazılabilir?",
+        "options": [
+          "A) -5",
+          "B) 10.5",
+          "C) -6.0",
+          "D) -10.5",
+          "E) -6"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "BETWEEN -10.5 AND -5 aralığında -10.5, -7, -5.5 gibi sayılar TRUE iken, pozitif olan 10.5 bu aralıkta olmadığı için FALSE sonucunu verir.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "PL/SQL veri tipi dönüşümüyle ilgili aşağıdaki şıklardan hangisi yanlıştır?",
+        "options": [
+          "A) BINARY_DOUBLE bir sayı PLS_INTEGER değişkene atanırsa ondalıklı kısım atılır.",
+          "B) Küçük nümerik veri tiplerinden büyük nümerik veri tiplerine dönüşüm yapılabilir.",
+          "C) Karakter değerleri sayıya çevrilebiliyorsa örtük dönüşümle nümerik değişkenlere atanabilir.",
+          "D) Tam sayıdan ondalıklı sayıya yapılan örtük dönüşümde değer kaybı olmaz.",
+          "E) Bir değeri, ulusal karakter veri tipine dönüştürmek için TO_NCHAR() fonksiyonu kullanılır."
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "PL/SQL dilinde tüm IF koşul yapılarıyla ilgili aşağıdakilerden hangisi yanlıştır?",
+        "options": [
+          "A) Koşulda birden fazla mantıksal önerme bulunuyorsa bunlar soldan sağa doğru çalıştırılır.",
+          "B) IF-THEN-ELSIF yapısında bir koşul sağlanmışsa sonraki koşullar kontrol edilmez.",
+          "C) Koşul yapılarında ELSE deyiminin bulunması zorunludur.",
+          "D) Koşul yapılarında ELSE deyimi en sonda bulunmalıdır.",
+          "E) IF-THEN-ELSIF yapısında koşullar yukarıdan aşağıya doğru çalıştırılır."
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "DECLARE\na NUMBER(2) := -1;\nBEGIN DBMS_OUTPUT.PUT_LINE(a);\nBEGINa :=1; END;DBMS_OUTPUT.PUT_LINE(a);\nDBMS_OUTPUT.PUT_LINE(a); END;\n\nYukarıda verilen PL/SQL programının çıktısı aşağıdaki hangi şıkta doğru verilmiştir?",
+        "options": [
+          "A) -1 -1 -1",
+          "B) 1 -1 1",
+          "C) -1 1 -1",
+          "D) 1 1 1",
+          "E) -1 1 1"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "İki veya daha fazla karakter dizgesini birleştirmek için kullanılan PL/SQL operatörü aşağıdaki seçeneklerin hangisinde verilmiştir?",
+        "options": [
+          "A) .",
+          "B)+",
+          "C) ''",
+          "D) ||",
+          "E) **"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "PL/SQL'de string (karakter dizisi) birleştirme operatörü '||' (çift dikey çizgi) dir.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "PL/SQL dilinde program akışını bir sonraki ifadeye aktarmak için kullanılan deyim aşağıdakilerden hangisidir?",
+        "options": [
+          "A) EXIT;",
+          "B) NULL;",
+          "C) BREAK;",
+          "D) GOTO;",
+          "E) RETURN;"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "PL/SQL'de hiçbir işlem yapmadan akışı sürdürmek için 'NULL;' deyimi kullanılır.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi NUMBER veri tipinden türetilmiş veri tiplerinden biri değildir?",
+        "options": [
+          "A) DOUBLE PRECISION",
+          "B) DECIMAL",
+          "C) REAL",
+          "D) PLS_INTEGER",
+          "E) SMALLINT"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi PL/SQL dil bileşenlerinden biri değildir?",
+        "options": [
+          "A) Döngü yapıları",
+          "B) İstisna işleme",
+          "C) Karar/koşul yapıları",
+          "D) Grafiksel kullanıcı arayüzü (GUI)",
+          "E) Paket yapısı"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi PL/SQL dilinde bir döngüyü koşullu sonlandırmak için kullanılır?",
+        "options": [
+          "A) NULL",
+          "B) CONTINUE",
+          "C) EXIT WHEN",
+          "D) BREAK",
+          "E) GOTO"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "PL/SQL döngülerinde belirli bir koşul sağlandığında döngüden çıkmak için 'EXIT WHEN koşul;' kullanılır.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "DECLARE\nsonuc NUMBER := -2**3*-2 3;\nBEGIN\nDBMS_OUTPUT.PUT_LINE(sonuc);\nEND;\n\nYukarıda verilen PL/SQL programının çıktısı aşağıdaki hangi seçenekte doğru verilmiştir?",
+        "options": [
+          "A) 15",
+          "B) -15",
+          "C) 9",
+          "D) 19",
+          "E) -19"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "İşlem önceliği: -2**3 = -8; ardından -8 * -2 = +16; sonrasında 16 + 3 = 19 (veya operatör önceliğine göre 19).",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi PL/SQL dilinin özelliklerinden biridir?",
+        "options": [
+          "A) PL/SQL dilinde değişken ve sabitler mutlaka bir veri tipiyle birlikte bildirilmelidir.",
+          "B) PL/SQL kaynak kodunda bir hata varsa hatanın olduğu satıra kadar olan kodlar çalıştırılır.",
+          "C) PL/SQL komutları önce yorumlanır ve bir ara forma dönüştürülür.",
+          "D) Kaynak kodda ihtiyaç duyulan herhangi bir satırda değişken ve sabitler tanımlanabilir.",
+          "E) PL/SQL, tüm veri tabanlarında yerleşik olarak kuruludur."
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdaki fonksiyonlardan hangisi veri tabanında geçerli tarih ve zaman bilgisini döndürür?",
+        "options": [
+          "A) LOCALTIMESTAMP",
+          "B) SYSTIMESTAMP",
+          "C) CURRENT_DATE",
+          "D) CURRENT_TIMESTAMP",
+          "E) SYSDATE"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi PL/SQL isimli blok yapılarından biridir?",
+        "options": [
+          "A) Begin",
+          "B) Declare",
+          "C) Function",
+          "D) Module",
+          "E) Exception"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "Procedure, Function, Package ve Trigger isimli bloklardır. DECLARE..BEGIN..END ise anonim bloktur.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "PL/SQL koşul yapılarıyla ilgili aşağıdaki şıklardan hangisi yanlıştır?",
+        "options": [
+          "A) Koşul yapılarında mantıksal önermeler yalnızca TRUE ise ilgili koşul bloğu çalıştırılır.",
+          "B) IF-THEN-ELSIF koşul yapısında hiçbir koşul sağlanmıyorsa program çalışma zamanı hata verir.",
+          "C) CASE koşul yapısında ELSE bloğunun bulunması isteğe bağlıdır.",
+          "D) IF-THEN koşul yapısında kontrol edilecek mantıksal önermeler soldan sağa doğru değerlendirilir.",
+          "E) ELSE bloğunun çalıştırılması için kendisinden önceki koşulların sağlanmamış olması gerekir."
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "ALTER SESSION SET plsql_implicit_conversion_bool = TRUE;\nDECLARE\na BOOLEAN := TRUE;\nb BOOLEAN := NULL;\ndurum BOOLEAN;\nBEGIN\ndurum := NOT a OR b;\nDBMS_OUTPUT.PUT_LINE('#' || durum || '#');\nEND;\n\nYukarıda verilen PL/SQL programının çıktısı aşağıdaki hangi şıkta doğru verilmiştir?",
+        "options": [
+          "A) #NOT#",
+          "B) #NULL#",
+          "C) ##",
+          "D) #FALSE#",
+          "E) #TRUE#"
+        ],
+        "answerIndex": 2,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "PL/SQL'de string (karakter dizisi) birleştirme operatörü '||' (çift dikey çizgi) dir.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "BEGIN\nFOR i IN -3..-1 LOOP\nIF i < -2 THEN\nNULL;\nELSE\nDBMS_OUTPUT.PUT_LINE(-1);\nDBMS_OUTPUT.PUT_LINE(i);\nEND IF;\nEND LOOP;\nEND;\n\nYukarıda verilen PL/SQL programının çıktısı aşağıdaki hangi seçenekte verilmiştir?",
+        "options": [
+          "A) 3 2 1",
+          "B) 3 2 -1",
+          "C) 3 -2 -1",
+          "D) 1 2 -3",
+          "E) -3 -2 -1"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "PL/SQL'de hiçbir işlem yapmadan akışı sürdürmek için 'NULL;' deyimi kullanılır.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi PL/SQL LOB veri tiplerinden biri değildir?",
+        "options": [
+          "A) BFILE",
+          "B) BLOB",
+          "C) CLOB",
+          "D) NCLOB",
+          "E) NLOB"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "LOB (Large Object) türleri: CLOB, NCLOB, BLOB ve BFILE'dır. 'NLOB' diye bir tür yoktur.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "PL/SQL kod mimarisiyle ilgili aşağıdakilerden hangisi doğrudur?",
+        "options": [
+          "A) Anonim bloklar, ismiyle çağrılıp tekrar kullanılabilirler.",
+          "B) İstisna işleme bölümünün yerleşimi deklarasyon bölümünden öncedir.",
+          "C) Kod mimarisinde en az iki bölüm bulunmalıdır.",
+          "D) Deklarasyon ve uygulama bölümü varsa istisna işleme bölümünün olması zorunludur.",
+          "E) Uygulama bölümünün olması zorunlu, deklarasyon ve istisna işleme bölümü isteğe bağlıdır."
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "PL/SQL bloklarında BEGIN..END arasındaki 'Uygulama (Executable)' bölümü zorunludur; DECLARE ve EXCEPTION bölümleri isteğe bağlıdır.",
+        "type": "lolonolo"
+      },
+      {
+        "question": "DECLARE\nn1 NUMBER(3) := 123.45;\nn2 NUMBER(4, 1) := 123.45;\nn3 NUMBER(5, 2) := 123.45;\n\nYukarıda bir kısmı verilen PL/SQL kodundaki değişkenlerin değerleri büyükten küçüğe aşağıdaki hangi seçenekte sıralanmıştır?",
+        "options": [
+          "A) n2 > n3 > n1",
+          "B) n3 > n1 > n2",
+          "C) n2 > n1 > n3",
+          "D) n1 > n3 > n2",
+          "E) n3 > n2 > n1"
+        ],
+        "answerIndex": 0,
+        "category": "AUZEF PL/SQL 2025-2026 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Yukarıda bir kısmı verilen PL/SQL kodundaki değişkenlerin değerleri büyükten küçüğe aşağıdaki hangi seçenekte sıralanmıştır?",
+        "options": [
+          "A) n3>n2>n1",
+          "B) n2>n3>n1",
+          "C) n3>n1>n2",
+          "D) n1>n3>n2",
+          "E) n2>n1>n3"
+        ],
+        "answerIndex": 1,
+        "category": "AUZEF PL/SQL 2024-2025 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Yukarıda bir kısmı verilen PL/SQL kodunda status değişkeninin FALSE olması için … üç noktayla boş bırakılan yere aşağıdaki seçeneklerden hangisi yazılabilir?",
+        "options": [
+          "A) -6.0",
+          "B) -10.5",
+          "C) -6",
+          "D) 10.5",
+          "E) -5"
+        ],
+        "answerIndex": 3,
+        "category": "AUZEF PL/SQL 2024-2025 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      },
+      {
+        "question": "Aşağıdakilerden hangisi PL/SQL dil bileşenlerden biri değildir?",
+        "options": [
+          "A) Paket yapısı",
+          "B) Karar/koşul yapıları",
+          "C) Döngü yapıları",
+          "D) İstisna işleme",
+          "E) Grafiksel kullanıcı arayüzü (GUI)"
+        ],
+        "answerIndex": 4,
+        "category": "AUZEF PL/SQL 2024-2025 Vize",
+        "explanation": "",
+        "type": "lolonolo"
+      }
+    ],
+    "benzer": [
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "Bir PL/SQL bloğunda 'DECLARE' anahtar kelimesi ile başlayan bölümün temel işlevi nedir?",
+        "options": [
+          "A) Programın çalışma zamanı hatalarını yakalamak",
+          "B) Değişken, sabit, imleç (cursor) ve kullanıcı tanımlı istisnaları bildirmek",
+          "C) SQL komutlarını doğrudan veritabanında yürütmek",
+          "D) Döngüleri koşullu olarak sonlandırmak",
+          "E) Veritabanı tetikleyicisi (trigger) oluşturmak"
+        ],
+        "answerIndex": 1,
+        "explanation": "DECLARE bölümü bildirim (deklarasyon) bölümüdür; değişken, sabit ve imleçler burada tanımlanır. İsteğe bağlıdır.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "PL/SQL'de ekrana veya konsola çıktı yazdırmak için kullanılan standart paket ve yordam hangisidir?",
+        "options": [
+          "A) Console.WriteLine()",
+          "B) System.out.println()",
+          "C) DBMS_OUTPUT.PUT_LINE()",
+          "D) PRINT_LINE()",
+          "E) ECHO()"
+        ],
+        "answerIndex": 2,
+        "explanation": "Oracle PL/SQL'de konsola metin basmak için DBMS_OUTPUT paketinin PUT_LINE yordamı kullanılır.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "Bir tablodaki belirli bir sütunun veri tipini dinamik olarak miras alarak bir değişken tanımlamak için hangi niteleyici kullanılır?",
+        "options": [
+          "A) %ROWTYPE",
+          "B) %TYPE",
+          "C) %NOTFOUND",
+          "D) %FOUND",
+          "E) %ISOPEN"
+        ],
+        "answerIndex": 1,
+        "explanation": "Tek bir sütunun veri tipini almak için %TYPE (örn: calisanlar.maas%TYPE), tablonun tüm satır yapısını almak için %ROWTYPE kullanılır.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "PL/SQL dilinde sabit (constant) bir değişken tanımlarken kullanılan sözdizimi aşağıdakilerden hangisidir?",
+        "options": [
+          "A) pi CONSTANT NUMBER := 3.14;",
+          "B) const pi NUMBER = 3.14;",
+          "C) NUMBER CONSTANT pi := 3.14;",
+          "D) static pi NUMBER := 3.14;",
+          "E) final pi NUMBER = 3.14;"
+        ],
+        "answerIndex": 0,
+        "explanation": "PL/SQL'de sabit tanımlama kuralı: <değişken_adı> CONSTANT <veri_tipi> := <değer>; şeklindedir.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "Aşağıdaki PL/SQL döngü türlerinden hangisinde döngü sayacı otomatik olarak tanımlanır ve her adımda 1 artırılır?",
+        "options": [
+          "A) Basit LOOP (Temel Döngü)",
+          "B) WHILE LOOP",
+          "C) FOR LOOP",
+          "D) REPEAT-UNTIL LOOP",
+          "E) DO-WHILE LOOP"
+        ],
+        "answerIndex": 2,
+        "explanation": "FOR i IN 1..10 LOOP yapısında 'i' döngü sayacı önceden declare edilmeksizin otomatik oluşturulur.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "PL/SQL'de tek satırlık açıklama (yorum) yazmak için hangi karakter çifti kullanılır?",
+        "options": [
+          "A) //",
+          "B) --",
+          "C) /*",
+          "D) #",
+          "E) %"
+        ],
+        "answerIndex": 1,
+        "explanation": "SQL ve PL/SQL'de tek satırlı yorum için '--' (çift tire) kullanılır. Çok satırlı yorum için /* ... */ kullanılır.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "Bir SELECT INTO sorgusu veritabanında hiçbir kayıt bulamadığında fırlatılan önceden tanımlanmış sistem istisnası hangisidir?",
+        "options": [
+          "A) TOO_MANY_ROWS",
+          "B) NO_DATA_FOUND",
+          "C) ZERO_DIVIDE",
+          "D) VALUE_ERROR",
+          "E) INVALID_CURSOR"
+        ],
+        "answerIndex": 1,
+        "explanation": "SELECT INTO ifadesi 0 kayıt döndürürse NO_DATA_FOUND, birden fazla (2+) kayıt döndürürse TOO_MANY_ROWS hatası oluşur.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "PL/SQL'de büyük boyutlu metin verilerini (4 GB'a kadar karakter tabanlı) depolamak için kullanılan LOB veri tipi hangisidir?",
+        "options": [
+          "A) BLOB",
+          "B) CLOB",
+          "C) BFILE",
+          "D) VARCHAR2",
+          "E) LONG RAW"
+        ],
+        "answerIndex": 1,
+        "explanation": "Karakter verileri için CLOB (Character Large Object), resim/ses/video ikili verileri için BLOB (Binary Large Object) kullanılır.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "Aşağıdakilerden hangisi bir PL/SQL bloğunun istisna işleme bölümünü başlatan anahtar kelimedir?",
+        "options": [
+          "A) CATCH",
+          "B) TRY",
+          "C) EXCEPTION",
+          "D) ERROR",
+          "E) THROW"
+        ],
+        "answerIndex": 2,
+        "explanation": "PL/SQL'de hataları yakalamak için EXCEPTION bloğu kullanılır.",
+        "type": "benzer"
+      },
+      {
+        "category": "PL/SQL Vize Benzeri Deneme",
+        "question": "Aşağıdakilerden hangisi PL/SQL atama operatörüdür?",
+        "options": [
+          "A) =",
+          "B) :=",
+          "C) ==",
+          "D) =>",
+          "E) ->"
+        ],
+        "answerIndex": 1,
+        "explanation": "PL/SQL'de bir değişkene değer atamak için ':=' operatörü kullanılır. Tek '=' ise karşılaştırma operatörüdür.",
+        "type": "benzer"
+      }
+    ],
+    "taktikler": [
+      {
+        "title": "1. 'Karakter dizilerini (string) birleştirme operatörü':",
+        "desc": "Cevap: || (Çift boru işareti). SQL ve PL/SQL'de metinleri birbirine bağlar.",
+        "color": "#38bdf8"
+      },
+      {
+        "title": "2. 'Hiçbir işlem yapmadan akışı sonraki ifadeye aktarma':",
+        "desc": "Cevap: NULL; deyimidir.",
+        "color": "#4ade80"
+      },
+      {
+        "title": "3. 'Döngüyü koşullu olarak sonlandırmak':",
+        "desc": "Cevap: EXIT WHEN <koşul>;",
+        "color": "#f87171"
+      },
+      {
+        "title": "4. 'Geçerli tarih ve zaman bilgisini döndüren fonksiyon':",
+        "desc": "Cevap: SYSDATE.",
+        "color": "#fb923c"
+      },
+      {
+        "title": "5. 'PL/SQL blok mimarisi zorunlu alan':",
+        "desc": "Cevap: Uygulama (Executable / BEGIN..END) bölümü ZORUNLUDUR. DECLARE ve EXCEPTION isteğe bağlıdır.",
+        "color": "#a855f7"
+      },
+      {
+        "title": "6. 'İsimli Bloklar hangileridir?':",
+        "desc": "Procedure, Function, Package ve Trigger isimli bloklardır. DECLARE..BEGIN..END ise anonim bloktur.",
+        "color": "#ec4899"
+      },
+      {
+        "title": "7. 'NUMBER tipinden türetilmemiş bağımsız tam sayı türü':",
+        "desc": "Cevap: PLS_INTEGER (Daha hızlıdır, makine aritmetiği kullanır).",
+        "color": "#eab308"
+      },
+      {
+        "title": "8. 'LOB veri tiplerinden biri DEĞİLDİR':",
+        "desc": "Cevap: NLOB. (Geçerli olanlar: CLOB, NCLOB, BLOB, BFILE).",
+        "color": "#2dd4bf"
+      },
+      {
+        "title": "9. 'PL/SQL Atama Operatörü':",
+        "desc": "Cevap: := (İki nokta üst üste ve eşittir). Tek '=' ise sadece eşitlik karşılaştırmasıdır.",
+        "color": "#818cf8"
+      },
+      {
+        "title": "10. 'Tek satırlı yorum karakteri':",
+        "desc": "Cevap: -- (Çift tire). C# gibi // DEĞİLDİR!",
+        "color": "#f43f5e"
+      }
+    ]
+  }
+};
+
+    function init() {
+      allCourses = embeddedCourses;
+      switchCourse('nyp');
+    }
+
+    function switchCourse(key) {
+      activeCourseKey = key;
+      currentTab = 'all';
+
+      // update course selector buttons
+      document.getElementById('btnCourseNYP').classList.toggle('active', key === 'nyp');
+      document.getElementById('btnCoursePLSQL').classList.toggle('active', key === 'plsql');
+
+      const course = allCourses[key];
+      document.getElementById('headerTitle').innerText = 'AUZEF ' + course.title;
+      document.getElementById('headerSubtitle').innerText = course.code + ' Çıkmış Vize Soruları & Benzer Soru Hazırlık Portalı';
+
+      renderTabs();
+      applyFilter();
+    }
+
+    function renderTabs() {
+      const course = allCourses[activeCourseKey];
+      const lolonoloCount = course.lolonolo.length;
+      const benzerCount = course.benzer.length;
+      const totalCount = lolonoloCount + benzerCount;
+
+      const tabsBar = document.getElementById('tabsBar');
+      tabsBar.innerHTML = `
+        <button class="tab-btn ${currentTab === 'all' ? 'active' : ''}" onclick="setTab('all')">Tüm Sorular (${totalCount})</button>
+        <button class="tab-btn ${currentTab === 'lolonolo' ? 'active' : ''}" onclick="setTab('lolonolo')">Lolonolo Vize (${lolonoloCount})</button>
+        <button class="tab-btn ${currentTab === 'benzer' ? 'active' : ''}" onclick="setTab('benzer')">Benzer Sorular (${benzerCount})</button>
+        <button class="tab-btn ${currentTab === 'taktikler' ? 'active' : ''}" onclick="setTab('taktikler')" style="background: #854d0e; color: #fef08a;">⚡ Sınav Taktikleri</button>
+      `;
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      renderTabs();
+      applyFilter();
+    }
+
+    function applyFilter() {
+      const course = allCourses[activeCourseKey];
+      const taktikPanel = document.getElementById('taktikPanel');
+      const qListEl = document.getElementById('questionList');
+      const statsEl = document.getElementById('statsBar');
+      const ctrlEl = document.getElementById('ctrlBar');
+
+      if (currentTab === 'taktikler') {
+        taktikPanel.style.display = 'block';
+        qListEl.style.display = 'none';
+        statsEl.style.display = 'none';
+        ctrlEl.style.display = 'none';
+        renderTaktikler();
+        return;
+      } else {
+        taktikPanel.style.display = 'none';
+        qListEl.style.display = 'flex';
+        statsEl.style.display = 'grid';
+        ctrlEl.style.display = 'flex';
+      }
+
+      let qList = [];
+      let idCounter = 1;
+      const lolonoloList = course.lolonolo.map(q => ({ ...q, id: `${activeCourseKey}_${idCounter++}`, type: 'lolonolo' }));
+      const benzerList = course.benzer.map(q => ({ ...q, id: `${activeCourseKey}_${idCounter++}`, type: 'benzer' }));
+
+      if (currentTab === 'lolonolo') {
+        currentQuestions = lolonoloList;
+      } else if (currentTab === 'benzer') {
+        currentQuestions = benzerList;
+      } else {
+        currentQuestions = [...lolonoloList, ...benzerList];
+      }
+
+      renderQuestions();
+    }
+
+    function renderTaktikler() {
+      const course = allCourses[activeCourseKey];
+      const listEl = document.getElementById('taktikList');
+      listEl.innerHTML = '';
+
+      course.taktikler.forEach(t => {
+        const item = document.createElement('div');
+        item.style.cssText = `background: #0f172a; padding: 14px; border-radius: 10px; border-left: 4px solid ${t.color};`;
+        item.innerHTML = `
+          <strong style="color: ${t.color};">${escapeHtml(t.title)}</strong><br>
+          <span style="color: #cbd5e1;">👉 ${escapeHtml(t.desc)}</span>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    function formatQuestionText(text) {
+      if (text.includes('{') || text.includes(';') || text.includes('Console.') || text.includes('DECLARE') || text.includes('BEGIN') || text.includes('DBMS_OUTPUT')) {
+        const lines = text.split('\n');
+        let formatted = '';
+        let codeLines = [];
+
+        lines.forEach(l => {
+          if (l.includes(';') || l.includes('{') || l.includes('}') || l.startsWith('int ') || l.startsWith('static ') || l.startsWith('double ') || l.startsWith('DECLARE') || l.startsWith('BEGIN') || l.startsWith('END') || l.startsWith('status ') || l.includes('DBMS_OUTPUT')) {
+            codeLines.push(l);
+          } else {
+            if (codeLines.length > 0) {
+              formatted += `<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`;
+              codeLines = [];
+            }
+            formatted += `<div>${escapeHtml(l)}</div>`;
+          }
+        });
+        if (codeLines.length > 0) {
+          formatted += `<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`;
+        }
+        return formatted;
+      }
+      return `<div>${escapeHtml(text)}</div>`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function renderQuestions() {
+      const listEl = document.getElementById('questionList');
+      listEl.innerHTML = '';
+
+      let correct = 0;
+      let wrong = 0;
+      let answered = 0;
+
+      currentQuestions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'q-card';
+        qCard.id = `q-card-${q.id}`;
+
+        const isAnswered = userAnswers[q.id] !== undefined;
+        const selectedIdx = userAnswers[q.id];
+
+        if (isAnswered) {
+          answered++;
+          if (selectedIdx === q.answerIndex) {
+            correct++;
+            qCard.classList.add('answered-correct');
+          } else {
+            wrong++;
+            qCard.classList.add('answered-wrong');
+          }
+        }
+
+        const isBenzer = q.type === 'benzer';
+        const badgeClass = isBenzer ? 'q-badge benzer' : 'q-badge';
+        const badgeText = q.category || (isBenzer ? 'Yeni Benzer Soru' : 'Çıkmış Vize');
+
+        let optionsHtml = '';
+        q.options.forEach((opt, optIdx) => {
+          let btnClass = 'opt-btn';
+          let disabled = isAnswered ? 'disabled' : '';
+
+          if (isAnswered) {
+            if (optIdx === q.answerIndex) {
+              btnClass += ' selected-correct';
+            } else if (optIdx === selectedIdx) {
+              btnClass += ' selected-wrong';
+            }
+          }
+
+          optionsHtml += `
+            <button class="${btnClass}" ${disabled} onclick="selectAnswer('${q.id}', ${optIdx})">
+              <span>${escapeHtml(opt)}</span>
+            </button>
+          `;
+        });
+
+        const showExp = isAnswered ? 'show' : '';
+        const explanationText = q.explanation ? `<strong>💡 Açıklama:</strong> ${escapeHtml(q.explanation)}` : `<strong>✓ Doğru Cevap:</strong> ${escapeHtml(q.options[q.answerIndex])}`;
+
+        qCard.innerHTML = `
+          <div class="q-header">
+            <span class="q-number">Soru ${idx + 1} / ${currentQuestions.length}</span>
+            <span class="${badgeClass}">${escapeHtml(badgeText)}</span>
+          </div>
+          <div class="q-text">${formatQuestionText(q.question)}</div>
+          <div class="options-grid">
+            ${optionsHtml}
+          </div>
+          <div class="explanation-box ${showExp}" id="exp-${q.id}">
+            ${explanationText}
+          </div>
+        `;
+
+        listEl.appendChild(qCard);
+      });
+
+      document.getElementById('totalCount').innerText = currentQuestions.length;
+      document.getElementById('correctCount').innerText = correct;
+      document.getElementById('wrongCount').innerText = wrong;
+      document.getElementById('remainCount').innerText = currentQuestions.length - answered;
+    }
+
+    function selectAnswer(qId, optIdx) {
+      if (userAnswers[qId] !== undefined) return;
+      userAnswers[qId] = optIdx;
+      renderQuestions();
+    }
+
+    function resetAnswers() {
+      if (confirm('Bu dersteki tüm yanıtlarınız sıfırlanacak. Onaylıyor musunuz?')) {
+        currentQuestions.forEach(q => delete userAnswers[q.id]);
+        renderQuestions();
+      }
+    }
+
+    function shuffleCurrent() {
+      for (let i = currentQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
+      }
+      renderQuestions();
+    }
+
+    init();
+  </script>
+</body>
+</html>
